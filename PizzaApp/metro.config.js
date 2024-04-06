@@ -11,7 +11,7 @@ config.transformer.getTransformOptions = async () => ({
   },
 })
 
-// const path = require("path")
-// config.watchFolders = [path.resolve(__dirname, "../modules/app-state")]
+const path = require("path")
+config.watchFolders = [path.resolve(__dirname, "../modules/app-state")]
 
 module.exports = config

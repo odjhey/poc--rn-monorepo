@@ -1,3 +1,3 @@
 export const appState = {
-  sayHello: () => 'yaharu 420',
+  sayHello: () => 'gg',
 }
