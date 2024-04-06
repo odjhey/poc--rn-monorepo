@@ -27,7 +27,8 @@
     "web": "npx expo start --web",
     "bundle:web": "npx expo export --platform web",
     "serve:web": "npx server dist",
-    "prebuild:clean": "npx expo prebuild --clean"
+    "prebuild:clean": "npx expo prebuild --clean",
+    "link-deps": "rm -r node_modules/@ftmobsquad/collections-app-state && ln -s ../../../modules/app-state node_modules/@ftmobsquad/collections-app-state"
   },
   "dependencies": {
     "@expo-google-fonts/space-grotesk": "^0.2.2",
