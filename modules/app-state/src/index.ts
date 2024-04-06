@@ -1,3 +1,3 @@
 export const appState = {
-  sayHello: () => 'not hello',
+  sayHello: () => 'yaharu 420',
 }

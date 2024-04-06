@@ -6,6 +6,7 @@ import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useStores } from "app/models"
+import { appState } from "@ftmobsquad/collections-app-state"
 
 interface AnotherScreenProps extends AppStackScreenProps<"Another"> {}
 
@@ -18,11 +19,11 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
       <View style={$topContainer}>
         <Button
           onPress={() => {
-            a.setValue("new value")
+            const v = appState.sayHello()
+            a.setValue(v)
           }}
         >
-          {" "}
-          view{" "}
+          view
         </Button>
       </View>
 
