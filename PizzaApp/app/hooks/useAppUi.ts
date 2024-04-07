@@ -1,5 +1,7 @@
 import { appState, appUi } from "@ftmobsquad/collections-app-state"
 import { useStores } from "app/models"
+// eslint-disable-next-line react-native/split-platform-components
+import { ToastAndroid } from "react-native"
 
 export const useAppUi = () => {
   const { todo } = useStores()
@@ -35,6 +37,13 @@ export const useAppUi = () => {
         } catch (e) {
           console.error(e)
         }
+      },
+    },
+
+    notifications: {
+      info: (message: string) => {
+        // Alert.alert("Info", message)
+        ToastAndroid.show(message, ToastAndroid.SHORT)
       },
     },
   })
