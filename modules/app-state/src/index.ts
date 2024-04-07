@@ -1,4 +1,5 @@
 import { types, Instance } from 'mobx-state-tree'
+import { appUi } from './ui/ui'
 
 const TodoModel = types
   .model({
@@ -60,6 +61,9 @@ type Deps = {
   }
 }
 
+// think dataProvider and navigationProvider and notificationsProvider
+// @todo maybe we don't need to expose this?
+// @todo add kick (like when not auth or expired token)
 export const appCore = ({ deps }: { deps: Deps }) => {
   let _appState: ReturnType<typeof appState>
 
@@ -71,9 +75,6 @@ export const appCore = ({ deps }: { deps: Deps }) => {
   }
 }
 
-// think dataProvider and navigationProvider and notificationsProvider
-// @todo maybe we don't need to expose this?
-// @todo add kick (like when not auth or expired token)
 const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
   // @todo add uid
   const cleanupFns: (() => void)[] = []
@@ -133,82 +134,5 @@ const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
   }
 }
 
-type Screens = 'screens/todo/add' | 'screens/todo/list'
-type Screen<T extends Screens> = (navigator: {
-  navigate: (target: T) => void
-}) => {
-  // eslint-disable-next-line @typescript-eslint/ban-types
-  actions: Record<string, Function>
-}
-
-export const appUi = (app: ReturnType<typeof appState>) => {
-  const screens = {
-    'screens/todo/add': ((navigator: {
-      navigate: (target: Extract<Screens, 'screens/todo/list'>) => void
-    }) => ({
-      actions: {
-        add: (value: string) => {
-          app.todo.add(value, {
-            after: () => {
-              // add events for sync later (offline feature)
-              navigator.navigate('screens/todo/list')
-            },
-          })
-        },
-      },
-    })) satisfies Screen<Extract<Screens, 'screens/todo/list'>>,
-
-    'screens/todo/list': ((navigator: {
-      navigate: (target: Extract<Screens, 'screens/todo/add'>) => void
-    }) => ({
-      actions: {
-        add: () => {
-          navigator.navigate('screens/todo/add')
-        },
-        clear: () => {
-          app.todo.clear()
-        },
-        refresh: () => {
-          app.todo.fetch()
-        },
-        sync: () => {
-          app.todo.sync()
-        },
-      },
-      views: {
-        todos: () => app.todo.get(),
-      },
-    })) satisfies Screen<Extract<Screens, 'screens/todo/add'>>,
-
-    'screens/todo/single': ((navigator: {
-      navigate: (target: Extract<Screens, 'screens/todo/list'>) => void
-    }) => ({
-      actions: {
-        list: () => {
-          navigator.navigate('screens/todo/list')
-        },
-      },
-      views: {
-        todo: (idx: number) => app.todo.getIdx(idx),
-      },
-    })) satisfies Screen<Extract<Screens, 'screens/todo/list'>>,
-  } as const
-
-  // type-check workaround since i can't seem to infer the type of screens
-  type InferredScreens = typeof screens
-  type ValidateScreensCoverage = {
-    [K in Screens]: K extends keyof InferredScreens ? InferredScreens[K] : never
-  }
-  // Compile-time validation (won't be used at runtime)
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const _screen_definition_completeness_check: ValidateScreensCoverage = screens
-
-  return {
-    globals: {
-      timer: {
-        get: app.timer.value,
-      },
-    },
-    screens,
-  }
-}
+export type AppState = ReturnType<typeof appState>
+export { appUi }
