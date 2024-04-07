@@ -1,34 +1,42 @@
 import { observer } from "mobx-react-lite"
-import React, { FC } from "react"
+import React, { FC, useState } from "react"
 import { View, ViewStyle } from "react-native"
-import { Button, Text } from "app/components"
+import { Button, Text, TextField } from "app/components"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { useStores } from "app/models"
 import { appState } from "@ftmobsquad/collections-app-state"
+import { useStores } from "app/models"
 
 interface AnotherScreenProps extends AppStackScreenProps<"Another"> {}
 
 export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeScreen() {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
-  const a = useStores()
+
+  const store = useStores()
+  const state = appState(store.todo)
+
+  const [newTodo, setNewTodo] = useState("")
 
   return (
     <View style={$container}>
       <View style={$topContainer}>
-        <Button
-          onPress={() => {
-            const v = appState.sayHello()
-            a.setValue(v)
-          }}
-        >
-          view
-        </Button>
+        <Text>{JSON.stringify(state.todo.get())}</Text>
       </View>
 
       <View style={[$bottomContainer, $bottomContainerInsets]}>
-        <Text>{a.selectedValue}</Text>
+        <Button
+          onPress={() => {
+            state.todo.add(newTodo)
+          }}
+        >
+          add
+        </Button>
+        <TextField
+          onChange={(e) => {
+            setNewTodo(e.nativeEvent.text)
+          }}
+        ></TextField>
       </View>
     </View>
   )
