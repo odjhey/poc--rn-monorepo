@@ -30,6 +30,8 @@ import { colors } from "app/theme"
 export type AppStackParamList = {
   Welcome: undefined
   Another: undefined
+  EditTodo: { index: number }
+  AddTodo: undefined
   // 🔥 Your screens go here
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
@@ -53,6 +55,8 @@ const AppStack = observer(function AppStack() {
     <Stack.Navigator screenOptions={{ headerShown: false, navigationBarColor: colors.background }}>
       <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
       <Stack.Screen name="Another" component={Screens.AnotherScreen} />
+      <Stack.Screen name="EditTodo" component={Screens.EditTodoScreen} />
+      <Stack.Screen name="AddTodo" component={Screens.AddTodoScreen} />
       {/** 🔥 Your screens go here */}
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
