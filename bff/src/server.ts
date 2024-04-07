@@ -1,7 +1,7 @@
 import fastify from 'fastify'
 import { z } from 'zod'
 
-const server = fastify()
+const server = fastify({ logger: true })
 
 let todos: string[] = ['default', 'default']
 

@@ -5,6 +5,10 @@ export const TodoModel = types
     todo: types.array(types.string),
   })
   .actions((self) => ({
+    setAll(values: string[]) {
+      self.todo.clear()
+      self.todo.push(...values)
+    },
     add(newTodo: string) {
       self.todo.push(newTodo)
     },
@@ -27,8 +31,24 @@ export const TodoModel = types
 
 // think dataProvider and navigationProvider
 // @todo maybe we don't need to expose this?
-export const appState = (model: Instance<typeof TodoModel>) => ({
+export const appState = (
+  model: Instance<typeof TodoModel>,
+  deps: {
+    // @todo rename this lol
+    online: {
+      fetchTodos: () => Promise<string[]>
+      sync: (todos: string[]) => Promise<void>
+    }
+  }
+) => ({
   todo: {
+    fetch: async () => {
+      const todos = await deps.online.fetchTodos()
+      model.setAll(todos)
+    },
+    sync: async () => {
+      await deps.online.sync(model.todo)
+    },
     add: (newTodo: string, effects?: { after: () => void }) => {
       model.add(newTodo)
 
@@ -85,6 +105,12 @@ export const appUi = (app: ReturnType<typeof appState>) => {
         },
         clear: () => {
           app.todo.clear()
+        },
+        refresh: () => {
+          app.todo.fetch()
+        },
+        sync: () => {
+          app.todo.sync()
         },
       },
       views: {

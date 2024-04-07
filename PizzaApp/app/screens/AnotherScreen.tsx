@@ -57,6 +57,20 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
         >
           clear
         </Button>
+        <Button
+          onPress={() => {
+            screen.actions.refresh()
+          }}
+        >
+          refresh
+        </Button>
+        <Button
+          onPress={() => {
+            screen.actions.sync()
+          }}
+        >
+          sync
+        </Button>
       </View>
     </View>
   )
