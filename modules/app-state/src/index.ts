@@ -20,6 +20,9 @@ export const TodoModel = types
     getIdx(index: number) {
       return self.todo[index]
     },
+    clear() {
+      self.todo.clear()
+    },
   }))
 
 // think dataProvider and navigationProvider
@@ -41,34 +44,62 @@ export const appState = (model: Instance<typeof TodoModel>) => ({
     },
     get: () => model.todo,
     getIdx: (index: number) => model.getIdx(index),
+    clear: () => model.clear(),
   },
 })
 
 type Screens = 'screens/todo/add' | 'screens/todo/list'
+type Screen<T extends Screens> = (navigator: {
+  navigate: (target: T) => void
+}) => {
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  actions: Record<string, Function>
+}
 
-export const appUi = (
-  app: ReturnType<typeof appState>,
-  navigator: { navigate: (target: Screens) => void }
-) => {
+export const appUi = (app: ReturnType<typeof appState>) => {
   const screens = {
-    'screens/todo/add': {
+    'screens/todo/add': ((navigator: {
+      navigate: (target: Extract<Screens, 'screens/todo/list'>) => void
+    }) => ({
       actions: {
-        add: () => {
-          app.todo.add('new todo', {
+        add: (value: string) => {
+          app.todo.add(value, {
             after: () => {
               navigator.navigate('screens/todo/list')
             },
           })
         },
       },
-    },
-    'screens/todo/list': {
+    })) satisfies Screen<Extract<Screens, 'screens/todo/list'>>,
+
+    'screens/todo/list': ((navigator: {
+      navigate: (target: Extract<Screens, 'screens/todo/add'>) => void
+    }) => ({
       actions: {
         add: () => {
           navigator.navigate('screens/todo/add')
         },
+        clear: () => {
+          app.todo.clear()
+        },
       },
-    },
+      views: {
+        todos: () => app.todo.get(),
+      },
+    })) satisfies Screen<Extract<Screens, 'screens/todo/add'>>,
+
+    'screens/todo/single': ((navigator: {
+      navigate: (target: Extract<Screens, 'screens/todo/list'>) => void
+    }) => ({
+      actions: {
+        list: () => {
+          navigator.navigate('screens/todo/list')
+        },
+      },
+      views: {
+        todo: (idx: number) => app.todo.getIdx(idx),
+      },
+    })) satisfies Screen<Extract<Screens, 'screens/todo/list'>>,
   } as const
 
   // type-check workaround since i can't seem to infer the type of screens

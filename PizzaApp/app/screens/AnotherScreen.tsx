@@ -5,8 +5,7 @@ import { Button, Text } from "app/components"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { appState, appUi } from "@ftmobsquad/collections-app-state"
-import { useStores } from "app/models"
+import { useAppUi } from "app/hooks/useAppUi"
 
 interface AnotherScreenProps extends AppStackScreenProps<"Another"> {}
 
@@ -15,15 +14,11 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
 }) {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-  const store = useStores()
-  const state = appState(store.todo)
-  const ui = appUi(state, {
+  const { ui } = useAppUi()
+  const screen = ui.screens["screens/todo/list"]({
     navigate: (target) => {
       // @todo fix the type
       switch (target) {
-        case "screens/todo/list":
-          navigation.navigate("Another")
-          break
         case "screens/todo/add":
           navigation.navigate("AddTodo")
           break
@@ -31,12 +26,10 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
     },
   })
 
-  const { actions } = ui.screens["screens/todo/list"]
-
   return (
     <View style={$container}>
       <View style={$topContainer}>
-        {state.todo.get().map((todo, index) => {
+        {screen.views.todos().map((todo, index) => {
           return (
             <Text
               onPress={() => {
@@ -53,10 +46,17 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
       <View style={[$bottomContainer, $bottomContainerInsets]}>
         <Button
           onPress={() => {
-            actions.add()
+            screen.actions.add()
           }}
         >
           add
+        </Button>
+        <Button
+          onPress={() => {
+            screen.actions.clear()
+          }}
+        >
+          clear
         </Button>
       </View>
     </View>

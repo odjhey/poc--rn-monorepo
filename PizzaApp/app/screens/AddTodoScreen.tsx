@@ -5,8 +5,7 @@ import { Button, TextField } from "app/components"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { appState } from "@ftmobsquad/collections-app-state"
-import { useStores } from "app/models"
+import { useAppUi } from "app/hooks/useAppUi"
 
 interface AnotherScreenProps extends AppStackScreenProps<"AddTodo"> {}
 
@@ -15,8 +14,16 @@ export const AddTodoScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
 }) {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-  const store = useStores()
-  const state = appState(store.todo)
+  const { ui } = useAppUi()
+  const screen = ui.screens["screens/todo/add"]({
+    navigate: (target) => {
+      switch (target) {
+        case "screens/todo/list":
+          navigation.navigate("Another")
+          break
+      }
+    },
+  })
 
   const [newTodo, setNewTodo] = useState("")
 
@@ -25,11 +32,7 @@ export const AddTodoScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
       <View style={$topContainer}>
         <Button
           onPress={() => {
-            state.todo.add(newTodo, {
-              after: () => {
-                navigation.navigate("Another")
-              },
-            })
+            screen.actions.add(newTodo)
           }}
         >
           add
