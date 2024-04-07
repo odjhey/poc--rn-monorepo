@@ -1,6 +1,6 @@
 import { types, Instance } from 'mobx-state-tree'
 
-export const TodoModel = types
+const TodoModel = types
   .model({
     todo: types.array(types.string),
   })
@@ -29,10 +29,22 @@ export const TodoModel = types
     },
   }))
 
+export const AppModel = types
+  .model({
+    todo: TodoModel,
+    timer: types.optional(types.string, ''), // @todo
+  })
+  .actions((self) => ({
+    setTimer(value: string) {
+      self.timer = value
+    },
+  }))
+
 // think dataProvider and navigationProvider and notificationsProvider
 // @todo maybe we don't need to expose this?
+// @todo add kick (like when not auth or expired token)
 export const appState = (
-  model: Instance<typeof TodoModel>,
+  model: Instance<typeof AppModel>,
   deps: {
     // @todo rename this lol
     online: {
@@ -43,39 +55,70 @@ export const appState = (
     notifications: {
       info: (message: string) => void
     }
-  }
-) => ({
-  todo: {
-    fetch: async () => {
-      const todos = await deps.online.fetchTodos()
-      model.setAll(todos)
-      deps.notifications.info('Done Refetch!')
-    },
-    sync: async () => {
-      await deps.online.sync(model.todo)
-      deps.notifications.info('Synced!')
-    },
-    add: (newTodo: string, effects?: { after: () => void }) => {
-      model.add(newTodo)
-
-      if (effects && typeof effects.after === 'function') {
-        effects.after()
+    plugins: {
+      timer: {
+        // return cleanup function
+        register: (
+          cb: (err: Error | undefined, value: string) => void
+        ) => () => void
       }
+    }
+  }
+) => {
+  // @todo add uid
+  const cleanupFns: (() => void)[] = []
+
+  return {
+    plugins: {
+      // @todo add a way to register individual
+      register: () => {
+        const cleanup = deps.plugins.timer.register((err, v) => {
+          // @todo check err
+          model.setTimer(v)
+        })
+        cleanupFns.push(cleanup)
+      },
+
+      // @todo add a way to unregister individual
+      unregister: () => {
+        cleanupFns.forEach((cleanup) => cleanup())
+      },
     },
-    edit: (index: number, newTodo: string) => {
-      model.edit(index, newTodo)
+    timer: {
+      value: () => model.timer,
     },
-    remove: (index: number) => {
-      model.remove(index)
+    todo: {
+      fetch: async () => {
+        const todos = await deps.online.fetchTodos()
+        model.todo.setAll(todos)
+        deps.notifications.info('Done Refetch!')
+      },
+      sync: async () => {
+        await deps.online.sync(model.todo.todo)
+        deps.notifications.info('Synced!')
+      },
+      add: (newTodo: string, effects?: { after: () => void }) => {
+        model.todo.add(newTodo)
+
+        if (effects && typeof effects.after === 'function') {
+          effects.after()
+        }
+      },
+      edit: (index: number, newTodo: string) => {
+        model.todo.edit(index, newTodo)
+      },
+      remove: (index: number) => {
+        model.todo.remove(index)
+      },
+      syncOnline: () => {
+        // POST to server
+      },
+      get: () => model.todo.todo,
+      getIdx: (index: number) => model.todo.getIdx(index),
+      clear: () => model.todo.clear(),
     },
-    syncOnline: () => {
-      // POST to server
-    },
-    get: () => model.todo,
-    getIdx: (index: number) => model.getIdx(index),
-    clear: () => model.clear(),
-  },
-})
+  }
+}
 
 type Screens = 'screens/todo/add' | 'screens/todo/list'
 type Screen<T extends Screens> = (navigator: {
@@ -148,6 +191,11 @@ export const appUi = (app: ReturnType<typeof appState>) => {
   const _screen_definition_completeness_check: ValidateScreensCoverage = screens
 
   return {
+    globals: {
+      timer: {
+        get: app.timer.value,
+      },
+    },
     screens,
   }
 }

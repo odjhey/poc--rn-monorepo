@@ -1,4 +1,4 @@
-import { TodoModel } from "@ftmobsquad/collections-app-state"
+import { AppModel } from "@ftmobsquad/collections-app-state"
 import { Instance, SnapshotOut, types } from "mobx-state-tree"
 
 /**
@@ -8,8 +8,7 @@ export const RootStoreModel = types
   .model("RootStore")
   .props({
     selectedValue: types.optional(types.string, "initial value"),
-    // use todomodel with default
-    todo: types.optional(TodoModel, { todo: [] }),
+    todo: types.optional(AppModel, { todo: { todo: [] } }),
   })
   .actions((self) => ({
     setValue: (value: string) => {

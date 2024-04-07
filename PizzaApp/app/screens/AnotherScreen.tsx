@@ -6,6 +6,7 @@ import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useAppScreens } from "app/hooks/useAppScreens"
+import { useAppUi } from "app/hooks/useAppUi"
 
 interface AnotherScreenProps extends AppStackScreenProps<"Another"> {}
 
@@ -14,6 +15,9 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
 }) {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
+  const {
+    ui: { globals },
+  } = useAppUi()
   const screen = useAppScreens()["screens/todo/list"]({
     navigate: (target) => {
       // @todo fix the type
@@ -28,6 +32,7 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
   return (
     <View style={$container}>
       <View style={$topContainer}>
+        <Text>{globals.timer.get()}</Text>
         {screen.views.todos().map((todo, index) => {
           return (
             <Text
