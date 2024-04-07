@@ -71,7 +71,8 @@ export const appCore = ({ deps }: { deps: Deps }) => {
     configure: (model: Instance<typeof AppModel>) => {
       _appState = appState(model, deps)
     },
-    appState: () => _appState,
+    // @todo we could cache this in a ref
+    appUi: () => appUi(_appState),
   }
 }
 
@@ -135,4 +136,3 @@ const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
 }
 
 export type AppState = ReturnType<typeof appState>
-export { appUi }

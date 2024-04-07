@@ -1,7 +1,7 @@
 import { useAppCore } from "app/core/useAppCore"
 
-export const useAppScreens = () => {
+export const useAppGlobals = () => {
   const { appUi } = useAppCore()
 
-  return appUi().screens
+  return appUi().globals
 }

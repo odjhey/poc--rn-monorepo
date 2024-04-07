@@ -19,7 +19,7 @@ if (__DEV__) {
 import "./i18n"
 import "./utils/ignoreWarnings"
 import { useFonts } from "expo-font"
-import React, { useEffect } from "react"
+import React from "react"
 import { initialWindowMetrics, SafeAreaProvider } from "react-native-safe-area-context"
 import * as Linking from "expo-linking"
 import { useInitialRootStore } from "./models"
@@ -84,13 +84,14 @@ function App(props: AppProps) {
     setTimeout(hideSplashScreen, 500)
   })
 
-  const { configure, appState } = useAppCore()
+  const { configure } = useAppCore()
 
-  useEffect(() => {
-    return () => {
-      appState().plugins.unregister()
-    }
-  }, [])
+  // @todo
+  // useEffect(() => {
+  //   return () => {
+  //     appState().plugins.unregister()
+  //   }
+  // }, [])
 
   // Before we show the app, we have to wait for our state to be ready.
   // In the meantime, don't render anything. This will be the background
@@ -100,7 +101,8 @@ function App(props: AppProps) {
   // You can replace with your own loading component if you wish.
   if (!rehydrated || !isNavigationStateRestored || !areFontsLoaded) return null
   configure(rootStore.todo)
-  appState().plugins.register()
+  // @todo
+  // appState().plugins.register()
 
   const linking = {
     prefixes: [prefix],

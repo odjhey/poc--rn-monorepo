@@ -6,7 +6,7 @@ import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
 import { useAppScreens } from "app/hooks/useAppScreens"
-import { useAppUi } from "app/hooks/useAppUi"
+import { useAppGlobals } from "app/hooks/useAppGlobals"
 
 interface AnotherScreenProps extends AppStackScreenProps<"Another"> {}
 
@@ -14,10 +14,8 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
   navigation,
 }) {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
+  const globals = useAppGlobals()
 
-  const {
-    ui: { globals },
-  } = useAppUi()
   const screen = useAppScreens()["screens/todo/list"]({
     navigate: (target) => {
       // @todo fix the type
