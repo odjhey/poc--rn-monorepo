@@ -40,31 +40,41 @@ export const AppModel = types
     },
   }))
 
+type Deps = {
+  // @todo rename this lol
+  online: {
+    // @todo these things fail, and we want to handle them, use a ResultType
+    fetchTodos: () => Promise<string[]>
+    sync: (todos: string[]) => Promise<void>
+  }
+  notifications: {
+    info: (message: string) => void
+  }
+  plugins: {
+    timer: {
+      // return cleanup function
+      register: (
+        cb: (err: Error | undefined, value: string) => void
+      ) => () => void
+    }
+  }
+}
+
+export const appCore = ({ deps }: { deps: Deps }) => {
+  let _appState: ReturnType<typeof appState>
+
+  return {
+    configure: (model: Instance<typeof AppModel>) => {
+      _appState = appState(model, deps)
+    },
+    appState: () => _appState,
+  }
+}
+
 // think dataProvider and navigationProvider and notificationsProvider
 // @todo maybe we don't need to expose this?
 // @todo add kick (like when not auth or expired token)
-export const appState = (
-  model: Instance<typeof AppModel>,
-  deps: {
-    // @todo rename this lol
-    online: {
-      // @todo these things fail, and we want to handle them, use a ResultType
-      fetchTodos: () => Promise<string[]>
-      sync: (todos: string[]) => Promise<void>
-    }
-    notifications: {
-      info: (message: string) => void
-    }
-    plugins: {
-      timer: {
-        // return cleanup function
-        register: (
-          cb: (err: Error | undefined, value: string) => void
-        ) => () => void
-      }
-    }
-  }
-) => {
+const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
   // @todo add uid
   const cleanupFns: (() => void)[] = []
 
@@ -72,6 +82,7 @@ export const appState = (
     plugins: {
       // @todo add a way to register individual
       register: () => {
+        console.info('registering plugins')
         const cleanup = deps.plugins.timer.register((err, v) => {
           // @todo check err
           model.setTimer(v)
