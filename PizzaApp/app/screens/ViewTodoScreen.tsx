@@ -2,10 +2,10 @@ import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
 import { View, ViewStyle } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Screen, Text } from "app/components"
+import { Button, Screen, Text } from "app/components"
 import { colors, spacing } from "app/theme"
 import { useSafeAreaInsetsStyle } from "app/utils/useSafeAreaInsetsStyle"
-import { useAppUi } from "app/hooks/useAppUi"
+import { useAppScreens } from "app/hooks/useAppScreens"
 // import { useNavigation } from "@react-navigation/native"
 // import { useStores } from "app/models"
 
@@ -19,8 +19,7 @@ export const ViewTodoScreen: FC<ViewTodoScreenProps> = observer(function ViewTod
 }) {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-  const { ui } = useAppUi()
-  const screen = ui.screens["screens/todo/single"]({
+  const { actions, views } = useAppScreens()["screens/todo/single"]({
     navigate: (target) => {
       switch (target) {
         case "screens/todo/list":
@@ -34,9 +33,11 @@ export const ViewTodoScreen: FC<ViewTodoScreenProps> = observer(function ViewTod
     <Screen style={$container}>
       <View style={$topContainer}>
         <Text>This is view single</Text>
-        <Text>{screen.views.todo(index)}</Text>
+        <Text>{views.todo(index)}</Text>
       </View>
-      <View style={[$bottomContainer, $bottomContainerInsets]}></View>
+      <View style={[$bottomContainer, $bottomContainerInsets]}>
+        <Button onPress={actions.list}>home</Button>
+      </View>
     </Screen>
   )
 })

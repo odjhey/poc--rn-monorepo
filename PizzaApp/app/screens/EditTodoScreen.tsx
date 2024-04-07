@@ -5,7 +5,7 @@ import { Button, TextField } from "app/components"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { useAppUi } from "app/hooks/useAppUi"
+import { useAppScreens } from "app/hooks/useAppScreens"
 
 interface AnotherScreenProps extends AppStackScreenProps<"EditTodo"> {}
 
@@ -14,8 +14,7 @@ export const EditTodoScreen: FC<AnotherScreenProps> = observer(function WelcomeS
 }) {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
 
-  const { ui } = useAppUi()
-  const screen = ui.screens["screens/todo/add"]({
+  const screen = useAppScreens()["screens/todo/add"]({
     navigate: (target) => {
       switch (target) {
         case "screens/todo/list":
