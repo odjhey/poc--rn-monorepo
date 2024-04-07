@@ -82,8 +82,9 @@ const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
     plugins: {
       // @todo add a way to register individual
       register: () => {
-        console.info('registering plugins')
+        console.info('registering plugins', cleanupFns)
         const cleanup = deps.plugins.timer.register((err, v) => {
+          console.log('timer ticked!')
           // @todo check err
           model.setTimer(v)
         })
@@ -92,6 +93,7 @@ const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
 
       // @todo add a way to unregister individual
       unregister: () => {
+        console.info('un-registering plugins')
         cleanupFns.forEach((cleanup) => cleanup())
       },
     },

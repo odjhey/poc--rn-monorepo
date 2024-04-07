@@ -1,5 +1,5 @@
 import { appUi } from "@ftmobsquad/collections-app-state"
-import { useAppCore } from "app/hooks/useAppCore"
+import { useAppCore } from "app/core/useAppCore"
 
 export const useAppUi = () => {
   const { appState } = useAppCore()

@@ -60,11 +60,10 @@ const _appCore = appCore({
     plugins: {
       timer: {
         register: (cb) => {
-          console.log("register timer")
+          console.info("register timer")
           const timeout = setInterval(() => {
             cb(undefined, "tick 2s " + new Date().toISOString())
           }, 2000)
-
           return () => clearInterval(timeout)
         },
       },
