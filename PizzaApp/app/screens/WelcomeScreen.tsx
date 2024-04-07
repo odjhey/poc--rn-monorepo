@@ -6,8 +6,6 @@ import { isRTL } from "../i18n"
 import { AppStackScreenProps } from "../navigators"
 import { colors, spacing } from "../theme"
 import { useSafeAreaInsetsStyle } from "../utils/useSafeAreaInsetsStyle"
-import { appState } from "@ftmobsquad/collections-app-state"
-import { useStores } from "app/models"
 
 const welcomeLogo = require("../../assets/images/logo.png")
 const welcomeFace = require("../../assets/images/welcome-face.png")
@@ -18,7 +16,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
   navigation,
 }) {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
-  const a = useStores()
 
   return (
     <View style={$container}>
@@ -32,20 +29,6 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
         />
         <Text tx="welcomeScreen.exciting" preset="subheading" />
         <Image style={$welcomeFace} source={welcomeFace} resizeMode="contain" />
-        <Button
-          onPress={() => {
-            appState.setJohn(
-              (v) => {
-                a.setValue(v)
-              },
-              () => {
-                navigation.navigate("Another")
-              },
-            )
-          }}
-        >
-          goto john
-        </Button>
       </View>
 
       <View style={[$bottomContainer, $bottomContainerInsets]}>
