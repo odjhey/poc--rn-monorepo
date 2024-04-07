@@ -42,6 +42,9 @@ export const appState = (model: Instance<typeof TodoModel>) => ({
     remove: (index: number) => {
       model.remove(index)
     },
+    syncOnline: () => {
+      // POST to server
+    },
     get: () => model.todo,
     getIdx: (index: number) => model.getIdx(index),
     clear: () => model.clear(),
@@ -65,6 +68,7 @@ export const appUi = (app: ReturnType<typeof appState>) => {
         add: (value: string) => {
           app.todo.add(value, {
             after: () => {
+              // add events for sync later (offline feature)
               navigator.navigate('screens/todo/list')
             },
           })
