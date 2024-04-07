@@ -21,7 +21,18 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
   return (
     <View style={$container}>
       <View style={$topContainer}>
-        <Text>{JSON.stringify(state.todo.get())}</Text>
+        {state.todo.get().map((todo, index) => {
+          return (
+            <Text
+              onPress={() => {
+                navigation.navigate("ViewTodo", { index })
+              }}
+              key={index}
+            >
+              {todo}
+            </Text>
+          )
+        })}
       </View>
 
       <View style={[$bottomContainer, $bottomContainerInsets]}>

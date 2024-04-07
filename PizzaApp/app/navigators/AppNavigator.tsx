@@ -33,6 +33,7 @@ export type AppStackParamList = {
   EditTodo: { index: number }
   AddTodo: undefined
   // 🔥 Your screens go here
+  ViewTodo: { index: number }
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -58,6 +59,7 @@ const AppStack = observer(function AppStack() {
       <Stack.Screen name="EditTodo" component={Screens.EditTodoScreen} />
       <Stack.Screen name="AddTodo" component={Screens.AddTodoScreen} />
       {/** 🔥 Your screens go here */}
+      <Stack.Screen name="ViewTodo" component={Screens.ViewTodoScreen} />
       {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )

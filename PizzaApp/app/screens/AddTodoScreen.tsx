@@ -25,8 +25,11 @@ export const AddTodoScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
       <View style={$topContainer}>
         <Button
           onPress={() => {
-            state.todo.add(newTodo)
-            navigation.navigate("Another")
+            state.todo.add(newTodo, {
+              after: () => {
+                navigation.navigate("Another")
+              },
+            })
           }}
         >
           add

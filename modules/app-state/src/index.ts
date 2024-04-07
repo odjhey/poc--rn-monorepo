@@ -22,10 +22,15 @@ export const TodoModel = types
     },
   }))
 
+// think dataProvider and navigationProvider
 export const appState = (model: Instance<typeof TodoModel>) => ({
   todo: {
-    add: (newTodo: string) => {
+    add: (newTodo: string, effects?: { after: () => void }) => {
       model.add(newTodo)
+
+      if (effects && typeof effects.after === 'function') {
+        effects.after()
+      }
     },
     edit: (index: number, newTodo: string) => {
       model.edit(index, newTodo)
