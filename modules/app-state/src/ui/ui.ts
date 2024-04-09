@@ -1,6 +1,6 @@
 import { AppState } from '../index'
-import type { Screens } from './screens.types'
-import { todoScreens } from './screens/todo'
+import type { ScreenKeys } from './screens.types'
+import { todoScreens } from './screens/todo/todo'
 
 export const appUi = (app: AppState) => {
   const screens = {
@@ -10,7 +10,9 @@ export const appUi = (app: AppState) => {
   // type-check workaround since i can't seem to infer the type of screens
   type InferredScreens = typeof screens
   type ValidateScreensCoverage = {
-    [K in Screens]: K extends keyof InferredScreens ? InferredScreens[K] : never
+    [K in ScreenKeys]: K extends keyof InferredScreens
+      ? InferredScreens[K]
+      : never
   }
   // Compile-time validation (won't be used at runtime)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
