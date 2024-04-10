@@ -23,11 +23,13 @@ export const appUi = (app: AppState) => {
 
   return {
     screens,
-    auth: {
-      isAuth: () => app.auth.isAuth(),
-    },
-    timers: {
-      timer: () => app.timer.value(),
+    globals: {
+      auth: {
+        isAuth: () => app.auth.isAuth(),
+      },
+      timers: {
+        timer: () => app.timer.value(),
+      },
     },
   }
 }

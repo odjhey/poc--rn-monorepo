@@ -57,7 +57,7 @@ const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
   const ui = useAppCore().appUi()
-  const isAuth = ui.auth.isAuth()
+  const isAuth = ui.globals.auth.isAuth()
   console.log({ isAuth })
 
   if (!isAuth) {

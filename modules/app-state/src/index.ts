@@ -1,5 +1,6 @@
 import { types, Instance } from 'mobx-state-tree'
 import { appUi } from './ui/ui'
+import { Api, DataProvider } from './data-provider/data-provider'
 
 const TodoModel = types
   .model({
@@ -56,16 +57,10 @@ export const AppModel = types
     },
   }))
 
-type Context = {
-  getToken: () => Promise<string>
-}
 type Deps = {
   // @todo rename this lol
-  online: {
-    // @todo these things fail, and we want to handle them, use a ResultType
-    fetchTodos: (context: Context) => Promise<string[]>
-    sync: (todos: string[], context: Context) => Promise<void>
-  }
+  // @todo these things fail, and we want to handle them, use a ResultType
+  online: Api
   notifications: {
     info: (message: string) => void
   }
@@ -88,18 +83,12 @@ type Deps = {
 // think dataProvider and navigationProvider and notificationsProvider
 // @todo maybe we don't need to expose this?
 // @todo add kick (like when not auth or expired token)
-export const appCore = ({
-  deps,
-  context,
-}: {
-  deps: Deps
-  context: Context
-}) => {
+export const appCore = ({ deps }: { deps: Deps }) => {
   let _appState: ReturnType<typeof appState>
 
   return {
     configure: (model: Instance<typeof AppModel>) => {
-      _appState = appState(model, deps, context)
+      _appState = appState(model, deps)
       return {
         globals: {
           register: () => _appState.plugins.register(),
@@ -118,11 +107,7 @@ export const appCore = ({
   }
 }
 
-const appState = (
-  model: Instance<typeof AppModel>,
-  deps: Deps,
-  context: Context
-) => {
+const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
   // @todo add uid
   const cleanupFns: (() => void)[] = []
 
@@ -165,12 +150,12 @@ const appState = (
     },
     todo: {
       fetch: async () => {
-        const todos = await deps.online.fetchTodos(context)
+        const todos = await deps.online.fetchTodos()
         model.todo.setAll(todos)
         deps.notifications.info('Done Refetch!')
       },
       sync: async () => {
-        await deps.online.sync(model.todo.todo, context)
+        await deps.online.sync(model.todo.todo)
         deps.notifications.info('Synced!')
       },
       add: (newTodo: string, effects?: { after: () => void }) => {
@@ -197,3 +182,4 @@ const appState = (
 }
 
 export type AppState = ReturnType<typeof appState>
+export { DataProvider }
