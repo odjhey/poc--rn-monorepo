@@ -14,7 +14,7 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
   navigation,
 }) {
   const $bottomContainerInsets = useSafeAreaInsetsStyle(["bottom"])
-  const globals = useAppGlobals()
+  const { timers } = useAppGlobals()
 
   const screen = useAppScreens()["screens/todo/list"]({
     navigate: (target) => {
@@ -30,7 +30,7 @@ export const AnotherScreen: FC<AnotherScreenProps> = observer(function WelcomeSc
   return (
     <View style={$container}>
       <View style={$topContainer}>
-        <Text>{globals.timer.get()}</Text>
+        <Text>{timers.timer()}</Text>
         {screen.views.todos().map((todo, index) => {
           return (
             <Text

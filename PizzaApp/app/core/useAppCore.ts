@@ -88,6 +88,15 @@ const _appCore = appCore({
           return () => clearInterval(timeout)
         },
       },
+      autoKick: {
+        register: (cb) => {
+          console.info("register timer")
+          const timeout = setInterval(() => {
+            cb(undefined, "autokick 60s " + new Date().toISOString())
+          }, 60000)
+          return () => clearInterval(timeout)
+        },
+      },
     },
   },
 })

@@ -76,6 +76,12 @@ type Deps = {
         cb: (err: Error | undefined, value: string) => void
       ) => () => void
     }
+    autoKick: {
+      // return cleanup function
+      register: (
+        cb: (err: Error | undefined, value: string) => void
+      ) => () => void
+    }
   }
 }
 
@@ -131,6 +137,14 @@ const appState = (
           model.setTimer(v)
         })
         cleanupFns.push(cleanup)
+
+        // kick after 20s
+        const cleanupKick = deps.plugins.autoKick.register(() => {
+          console.log('autokick ticked!')
+          // @todo check err
+          model.auth.logout()
+        })
+        cleanupFns.push(cleanupKick)
       },
 
       // @todo add a way to unregister individual

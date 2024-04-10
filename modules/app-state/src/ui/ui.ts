@@ -26,5 +26,8 @@ export const appUi = (app: AppState) => {
     auth: {
       isAuth: () => app.auth.isAuth(),
     },
+    timers: {
+      timer: () => app.timer.value(),
+    },
   }
 }
