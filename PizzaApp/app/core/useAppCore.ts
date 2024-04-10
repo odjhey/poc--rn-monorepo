@@ -7,15 +7,27 @@ const dataProvider = DataProvider({
   config: {
     url: "http://localhost:8080",
     httpClient: {
-      get: (url, { body, headers }) => {
-        console.info(url, body, headers)
-        // @todo fix any
-        return fetch(url, { method: "GET", body: body as any, headers })
+      get: (url, options) => {
+        if (options) {
+          const { headers, body } = options
+          console.info(url, body, headers)
+          // @todo fix any
+          return fetch(url, { method: "GET", body: body as any, headers })
+        } else {
+          console.info(url)
+          return fetch(url, { method: "GET" })
+        }
       },
-      post: (url, { body, headers }) => {
-        console.info(url, body, headers)
-        // @todo fix any
-        return fetch(url, { method: "POST", body: body as any, headers })
+      post: (url, options) => {
+        if (options) {
+          const { headers, body } = options
+          console.info(url, body, headers)
+          // @todo fix any
+          return fetch(url, { method: "POST", body: body as any, headers })
+        } else {
+          console.info(url)
+          return fetch(url, { method: "POST" })
+        }
       },
     },
   },

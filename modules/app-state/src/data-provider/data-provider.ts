@@ -1,102 +1,23 @@
-type HttpClient = {
-  get: (
-    url: string,
-    options: {
-      body: unknown
-      headers: {
-        Authorization: string
-        'Content-Type': 'application/json'
-      }
-    }
-  ) => Promise<{
-    readonly ok: boolean
-    readonly status: number
-    readonly statusText: string
-    readonly json: () => Promise<unknown>
-  }>
-  post: (
-    url: string,
-    options: {
-      body?: unknown
-      headers?: {
-        Authorization?: string
-        'Content-Type': 'application/json'
-      }
-    }
-  ) => Promise<{
-    readonly ok: boolean
-    readonly status: number
-    readonly statusText: string
-    readonly json: () => Promise<unknown>
-  }>
-}
+import { registerCalls } from './calls/calls'
+import { Context } from './data-provider.context'
+import { HttpClient } from './http-client.types'
 
-export const DataProvider = ({
-  config,
-}: {
+type DataProviderConfig = {
   config: {
     url: string
     httpClient: HttpClient
+    // @todo add token cache maybe? or straight up localstore
   }
-}) => {
+}
+
+export const DataProvider = ({ config }: DataProviderConfig) => {
   const apiUrl = config.url
-  const httpClient = config.httpClient
-  const context = {
-    // @todo should be a result type?
-    getToken: async () => {
-      try {
-        const result = await httpClient.post(`${apiUrl}/public/login`, {})
-        // @todo check payload
-        return ((await result.json()) as { token: string }).token
-      } catch (e) {
-        console.error(e)
-        return ''
-      }
-    },
-  } as const
+  const client = config.httpClient
+  const context = Context({ url: apiUrl, client })
 
   return {
     context,
-    calls: {
-      fetchTodos: async () => {
-        // @todo: extract this to own module/service for better error handling
-        try {
-          const token = await context.getToken()
-          const response = await httpClient.get(`${apiUrl}/api/todos`, {
-            headers: {
-              'Content-Type': 'application/json',
-              // @todo fixme
-              Authorization: token || '',
-            },
-            body: undefined,
-          })
-
-          console.log(response.status)
-          // @todo validate this of course
-          return (await response.json()) as string[]
-        } catch (e) {
-          console.error(e)
-        }
-        // this is much better than have the app crash
-        return []
-      },
-
-      sync: async (todos: string[]) => {
-        try {
-          const token = await context.getToken()
-          const result = await httpClient.post(`${apiUrl}/api/todos`, {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: token,
-            },
-            body: JSON.stringify(todos),
-          })
-          console.log(result.status)
-        } catch (e) {
-          console.error(e)
-        }
-      },
-    },
+    calls: registerCalls({ url: apiUrl, client }, context),
   } as const
 }
 
