@@ -16,15 +16,34 @@ import { ToastAndroid } from "react-native"
  * instantiating it, although that should be rare.
  */
 const _appCore = appCore({
+  context: {
+    // @todo should be a result type?
+    getToken: async () => {
+      try {
+        const result = await fetch("http://localhost:8080/public/login", {
+          method: "POST",
+        })
+        console.log(result.status)
+        return (await result.json()).token
+      } catch (e) {
+        console.error(e)
+      }
+    },
+  },
   deps: {
     online: {
-      fetchTodos: async () => {
+      fetchTodos: async (context) => {
         // #todo: extract this to own module/service for better error handling
         try {
-          const response = await fetch("http://localhost:8080/todos", {
+          const token = await context.getToken()
+          const response = await fetch("http://localhost:8080/api/todos", {
             method: "GET",
+            headers: {
+              Authorization: token,
+            },
           })
 
+          console.log(response.status)
           // @todo validate this of course
           return await response.json()
         } catch (e) {
@@ -34,12 +53,14 @@ const _appCore = appCore({
         return []
       },
 
-      sync: async (todos: string[]) => {
+      sync: async (todos: string[], context) => {
         try {
-          const result = await fetch("http://localhost:8080/todos", {
+          const token = await context.getToken()
+          const result = await fetch("http://localhost:8080/api/todos", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
+              Authorization: token,
             },
             body: JSON.stringify(todos),
           })

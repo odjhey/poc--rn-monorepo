@@ -41,12 +41,15 @@ export const AppModel = types
     },
   }))
 
+type Context = {
+  getToken: () => Promise<string>
+}
 type Deps = {
   // @todo rename this lol
   online: {
     // @todo these things fail, and we want to handle them, use a ResultType
-    fetchTodos: () => Promise<string[]>
-    sync: (todos: string[]) => Promise<void>
+    fetchTodos: (context: Context) => Promise<string[]>
+    sync: (todos: string[], context: Context) => Promise<void>
   }
   notifications: {
     info: (message: string) => void
@@ -64,19 +67,29 @@ type Deps = {
 // think dataProvider and navigationProvider and notificationsProvider
 // @todo maybe we don't need to expose this?
 // @todo add kick (like when not auth or expired token)
-export const appCore = ({ deps }: { deps: Deps }) => {
+export const appCore = ({
+  deps,
+  context,
+}: {
+  deps: Deps
+  context: Context
+}) => {
   let _appState: ReturnType<typeof appState>
 
   return {
     configure: (model: Instance<typeof AppModel>) => {
-      _appState = appState(model, deps)
+      _appState = appState(model, deps, context)
     },
     // @todo we could cache this in a ref
     appUi: () => appUi(_appState),
   }
 }
 
-const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
+const appState = (
+  model: Instance<typeof AppModel>,
+  deps: Deps,
+  context: Context
+) => {
   // @todo add uid
   const cleanupFns: (() => void)[] = []
 
@@ -104,12 +117,12 @@ const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
     },
     todo: {
       fetch: async () => {
-        const todos = await deps.online.fetchTodos()
+        const todos = await deps.online.fetchTodos(context)
         model.todo.setAll(todos)
         deps.notifications.info('Done Refetch!')
       },
       sync: async () => {
-        await deps.online.sync(model.todo.todo)
+        await deps.online.sync(model.todo.todo, context)
         deps.notifications.info('Synced!')
       },
       add: (newTodo: string, effects?: { after: () => void }) => {
