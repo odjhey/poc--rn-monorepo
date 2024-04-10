@@ -100,8 +100,9 @@ function App(props: AppProps) {
   // In Android: https://stackoverflow.com/a/45838109/204044
   // You can replace with your own loading component if you wish.
   if (!rehydrated || !isNavigationStateRestored || !areFontsLoaded) return null
-  const { globals: appCoreGlobals } = configure(rootStore.todo)
-  appCoreGlobals.register()
+  const { globals: _ /* appCoreGlobals */ } = configure(rootStore.todo)
+  // @todo the tickers are disabled for now for dev purposes, reanable later
+  // appCoreGlobals.register()
 
   const linking = {
     prefixes: [prefix],
