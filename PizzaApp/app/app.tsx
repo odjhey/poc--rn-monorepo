@@ -86,7 +86,7 @@ function App(props: AppProps) {
 
   const { configure } = useAppCore()
 
-  // @todo
+  // @todo find a way to unregister hooks without rerender
   // useEffect(() => {
   //   return () => {
   //     appState().plugins.unregister()
@@ -100,9 +100,8 @@ function App(props: AppProps) {
   // In Android: https://stackoverflow.com/a/45838109/204044
   // You can replace with your own loading component if you wish.
   if (!rehydrated || !isNavigationStateRestored || !areFontsLoaded) return null
-  configure(rootStore.todo)
-  // @todo
-  // appState().plugins.register()
+  const { globals: appCoreGlobals } = configure(rootStore.todo)
+  appCoreGlobals.register()
 
   const linking = {
     prefixes: [prefix],

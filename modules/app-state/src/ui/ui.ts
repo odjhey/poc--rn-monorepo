@@ -1,10 +1,12 @@
 import { AppState } from '../index'
 import type { ScreenKeys } from './screens.types'
+import { authScreens } from './screens/auth/auth.screen'
 import { todoScreens } from './screens/todo/todo'
 
 export const appUi = (app: AppState) => {
   const screens = {
     ...todoScreens(app),
+    ...authScreens(app),
   } as const
 
   // type-check workaround since i can't seem to infer the type of screens
@@ -14,16 +16,15 @@ export const appUi = (app: AppState) => {
       ? InferredScreens[K]
       : never
   }
+  // @todo this does not check for "extra" screens, only for missing screens
   // Compile-time validation (won't be used at runtime)
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const _screen_definition_completeness_check: ValidateScreensCoverage = screens
 
   return {
-    globals: {
-      timer: {
-        get: app.timer.value,
-      },
-    },
     screens,
+    auth: {
+      isAuth: () => app.auth.isAuth(),
+    },
   }
 }

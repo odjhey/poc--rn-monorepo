@@ -1,4 +1,8 @@
-export type ScreenKeys = 'screens/todo/add' | 'screens/todo/list'
+export type ScreenKeys =
+  | 'screens/todo/add'
+  | 'screens/todo/list'
+  | 'screens/auth/login'
+  | 'screens/auth/profile'
 
 // Navigator definition, targeting specific screens
 export type Navigator<TargetScreens extends ScreenKeys> = {

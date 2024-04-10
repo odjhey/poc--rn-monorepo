@@ -6,3 +6,5 @@ export * from "./ErrorScreen/ErrorBoundary"
 // export other screens here
 export * from "./ViewTodoScreen"
 export * from "./RandomScreen"
+export * from "./LoginScreen"
+export * from "./ProfileScreen"

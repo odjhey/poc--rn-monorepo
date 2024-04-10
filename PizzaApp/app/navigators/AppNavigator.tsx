@@ -13,6 +13,7 @@ import * as Screens from "app/screens"
 import Config from "../config"
 import { navigationRef, useBackButtonHandler } from "./navigationUtilities"
 import { colors } from "app/theme"
+import { useAppCore } from "app/core/useAppCore"
 
 /**
  * This type allows TypeScript to know what routes are defined in this navigator
@@ -35,7 +36,9 @@ export type AppStackParamList = {
   // 🔥 Your screens go here
   ViewTodo: { index: number }
   Random: undefined
-	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  Login: undefined
+  Profile: undefined
+  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -53,6 +56,20 @@ export type AppStackScreenProps<T extends keyof AppStackParamList> = NativeStack
 const Stack = createNativeStackNavigator<AppStackParamList>()
 
 const AppStack = observer(function AppStack() {
+  const ui = useAppCore().appUi()
+  const isAuth = ui.auth.isAuth()
+  console.log({ isAuth })
+
+  if (!isAuth) {
+    return (
+      <Stack.Navigator
+        screenOptions={{ headerShown: false, navigationBarColor: colors.background }}
+      >
+        <Stack.Screen name="Login" component={Screens.LoginScreen} />
+      </Stack.Navigator>
+    )
+  }
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false, navigationBarColor: colors.background }}>
       <Stack.Screen name="Welcome" component={Screens.WelcomeScreen} />
@@ -62,7 +79,8 @@ const AppStack = observer(function AppStack() {
       {/** 🔥 Your screens go here */}
       <Stack.Screen name="ViewTodo" component={Screens.ViewTodoScreen} />
       <Stack.Screen name="Random" component={Screens.RandomScreen} />
-			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+      <Stack.Screen name="Profile" component={Screens.ProfileScreen} />
+      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })

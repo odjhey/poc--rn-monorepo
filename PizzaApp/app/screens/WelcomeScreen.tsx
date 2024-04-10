@@ -46,6 +46,13 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
         >
           Random
         </Button>
+        <Button
+          onPress={() => {
+            navigation.navigate("Profile")
+          }}
+        >
+          Profile
+        </Button>
       </View>
     </View>
   )

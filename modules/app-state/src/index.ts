@@ -30,10 +30,25 @@ const TodoModel = types
     },
   }))
 
+const Auth = types
+  .model({
+    isAuth: types.boolean,
+  })
+  .actions((self) => ({
+    logout: () => {
+      self.isAuth = false
+    },
+    login: () => {
+      // @todo convert this to flow
+      self.isAuth = true
+    },
+  }))
+
 export const AppModel = types
   .model({
     todo: TodoModel,
     timer: types.optional(types.string, ''), // @todo
+    auth: types.optional(Auth, { isAuth: true }),
   })
   .actions((self) => ({
     setTimer(value: string) {
@@ -79,6 +94,18 @@ export const appCore = ({
   return {
     configure: (model: Instance<typeof AppModel>) => {
       _appState = appState(model, deps, context)
+      return {
+        globals: {
+          register: () => _appState.plugins.register(),
+          unregister: () => _appState.plugins.unregister(),
+          timer: {
+            get: _appState.timer.value,
+          },
+          auth: {
+            isAuth: () => _appState.auth.isAuth(),
+          },
+        },
+      }
     },
     // @todo we could cache this in a ref
     appUi: () => appUi(_appState),
@@ -114,6 +141,13 @@ const appState = (
     },
     timer: {
       value: () => model.timer,
+    },
+    auth: {
+      isAuth: () => model.auth.isAuth,
+      logout: () => model.auth.logout(),
+      login: () => {
+        model.auth.login()
+      },
     },
     todo: {
       fetch: async () => {
