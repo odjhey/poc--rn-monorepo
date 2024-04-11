@@ -1,3 +1,4 @@
+import 'dotenv/config'
 import fastify, {
   FastifyInstance,
   FastifyPluginAsync,
@@ -5,6 +6,7 @@ import fastify, {
   FastifyRequest,
 } from 'fastify'
 import { z } from 'zod'
+import trpcRegister from './trpc/plugin'
 
 const server = fastify({ logger: true })
 
@@ -49,6 +51,7 @@ const publicRoutes: FastifyPluginAsync = async (api) => {
 
 server.register(protectedRoutes, { prefix: '/api' })
 server.register(publicRoutes, { prefix: '/public' })
+server.register(trpcRegister, { prefix: '/rpc' })
 
 server.listen(
   { port: process.env.PORT ? Number(process.env.PORT) : 8080 },
