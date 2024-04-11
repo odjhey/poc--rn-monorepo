@@ -3,6 +3,7 @@ export type ScreenKeys =
   | 'screens/todo/list'
   | 'screens/auth/login'
   | 'screens/auth/profile'
+/* tag: screens-end */
 
 // Navigator definition, targeting specific screens
 export type Navigator<TargetScreens extends ScreenKeys> = {
