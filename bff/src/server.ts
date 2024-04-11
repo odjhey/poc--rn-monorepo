@@ -50,10 +50,13 @@ const publicRoutes: FastifyPluginAsync = async (api) => {
 server.register(protectedRoutes, { prefix: '/api' })
 server.register(publicRoutes, { prefix: '/public' })
 
-server.listen({ port: 8080 }, (err, address) => {
-  if (err) {
-    console.error(err)
-    process.exit(1)
+server.listen(
+  { port: process.env.PORT ? Number(process.env.PORT) : 8080 },
+  (err, address) => {
+    if (err) {
+      console.error(err)
+      process.exit(1)
+    }
+    console.log(`Server listening at ${address}`)
   }
-  console.log(`Server listening at ${address}`)
-})
+)
