@@ -20,6 +20,9 @@ export const authScreens = (
       logout: () => {
         app.auth.logout()
       },
+      wipe: () => {
+        app.wipe()
+      },
     },
     views: { t: 'string' },
   }),

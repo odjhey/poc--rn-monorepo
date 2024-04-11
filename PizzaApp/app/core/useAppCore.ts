@@ -5,7 +5,7 @@ import { ToastAndroid } from "react-native"
 
 const dataProvider = DataProvider({
   config: {
-    url: "http://localhost:8080",
+    url: "",
     httpClient: {
       get: (url, options) => {
         if (options) {
@@ -47,7 +47,7 @@ const dataProvider = DataProvider({
  */
 const _appCore = appCore({
   deps: {
-    online: dataProvider.calls,
+    dataProvider,
     notifications: {
       info: (message: string) => {
         // Alert.alert("Info", message)

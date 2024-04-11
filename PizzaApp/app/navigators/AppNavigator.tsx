@@ -38,6 +38,7 @@ export type AppStackParamList = {
   Random: undefined
   Login: undefined
   Profile: undefined
+  ConnectionSetup: undefined
   // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
@@ -58,7 +59,18 @@ const Stack = createNativeStackNavigator<AppStackParamList>()
 const AppStack = observer(function AppStack() {
   const ui = useAppCore().appUi()
   const isAuth = ui.globals.auth.isAuth()
-  console.log({ isAuth })
+  const hasConnection = ui.globals.hasConnection()
+  console.log({ isAuth, hasConnection })
+
+  if (!hasConnection) {
+    return (
+      <Stack.Navigator
+        screenOptions={{ headerShown: false, navigationBarColor: colors.background }}
+      >
+        <Stack.Screen name="ConnectionSetup" component={Screens.ConnectionSetupScreen} />
+      </Stack.Navigator>
+    )
+  }
 
   if (!isAuth) {
     return (

@@ -11,13 +11,17 @@ type DataProviderConfig = {
 }
 
 export const DataProvider = ({ config }: DataProviderConfig) => {
-  const apiUrl = config.url
+  let apiUrl = config.url
   const client = config.httpClient
-  const context = Context({ url: apiUrl, client })
+  const context = () => Context({ url: apiUrl, client })
 
   return {
+    setApiUrl: (url: string) => {
+      apiUrl = url
+    },
+    apiUrl: () => apiUrl,
     context,
-    calls: registerCalls({ url: apiUrl, client }, context),
+    calls: () => registerCalls({ url: apiUrl, client }, context()),
   } as const
 }
 

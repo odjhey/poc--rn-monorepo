@@ -8,7 +8,7 @@ export const RootStoreModel = types
   .model("RootStore")
   .props({
     selectedValue: types.optional(types.string, "initial value"),
-    todo: types.optional(AppModel, { todo: { todo: [] } }),
+    todo: types.optional(AppModel, { todo: { todo: [] }, connection: { url: "" } }),
   })
   .actions((self) => ({
     setValue: (value: string) => {

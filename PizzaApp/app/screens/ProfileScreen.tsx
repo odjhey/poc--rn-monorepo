@@ -24,6 +24,12 @@ export const ProfileScreen: FC<ProfileScreenProps> = observer(function ProfileSc
         }}
         text="logout"
       ></Button>
+      <Button
+        onPress={() => {
+          screen.actions.wipe()
+        }}
+        text="wipe"
+      ></Button>
     </Screen>
   )
 })

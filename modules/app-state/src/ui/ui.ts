@@ -2,11 +2,13 @@ import { AppState } from '../index'
 import type { ScreenKeys } from './screens.types'
 import { authScreens } from './screens/auth/auth.screen'
 import { todoScreens } from './screens/todo/todo'
+import { clientSelectorScreens } from './screens/client-selector/client-selector.screen'
 
 export const appUi = (app: AppState) => {
   const screens = {
     ...todoScreens(app),
     ...authScreens(app),
+    ...clientSelectorScreens(app),
   } as const
 
   // type-check workaround since i can't seem to infer the type of screens
@@ -24,6 +26,7 @@ export const appUi = (app: AppState) => {
   return {
     screens,
     globals: {
+      hasConnection: () => app.apiConnection.hasConnection(),
       auth: {
         isAuth: () => app.auth.isAuth(),
       },

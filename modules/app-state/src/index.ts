@@ -1,6 +1,6 @@
 import { types, Instance } from 'mobx-state-tree'
 import { appUi } from './ui/ui'
-import { Api, DataProvider } from './data-provider/data-provider'
+import { DataProvider } from './data-provider/data-provider'
 
 const TodoModel = types
   .model({
@@ -45,22 +45,31 @@ const Auth = types
     },
   }))
 
+const Connection = types.model({
+  url: types.string,
+})
+
 export const AppModel = types
   .model({
     todo: TodoModel,
     timer: types.optional(types.string, ''), // @todo
     auth: types.optional(Auth, { isAuth: true }),
+    connection: Connection,
   })
   .actions((self) => ({
     setTimer(value: string) {
       self.timer = value
+    },
+    setConnection(value: string) {
+      self.connection.url = value
     },
   }))
 
 type Deps = {
   // @todo rename this lol
   // @todo these things fail, and we want to handle them, use a ResultType
-  online: Api
+  // online: Api
+  dataProvider: ReturnType<typeof DataProvider>
   notifications: {
     info: (message: string) => void
   }
@@ -110,8 +119,28 @@ export const appCore = ({ deps }: { deps: Deps }) => {
 const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
   // @todo add uid
   const cleanupFns: (() => void)[] = []
+  const calls = deps.dataProvider.calls
 
   return {
+    wipe: () => {
+      model.todo.clear()
+      model.setConnection('')
+      model.auth.logout()
+    },
+    apiConnection: {
+      hasConnection: () => model.connection.url !== '',
+      setConnection: ({ url }: { url: string }) => {
+        // @todo use this hack to rerender for now
+        model.setConnection(url)
+        deps.dataProvider.setApiUrl(url)
+      },
+    },
+    config: {
+      setApiSeed: (seed: string) => {
+        // @todo validate etc
+        deps.dataProvider.setApiUrl(seed)
+      },
+    },
     plugins: {
       // @todo add a way to register individual
       register: () => {
@@ -150,12 +179,12 @@ const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
     },
     todo: {
       fetch: async () => {
-        const todos = await deps.online.fetchTodos()
+        const todos = await calls().fetchTodos()
         model.todo.setAll(todos)
         deps.notifications.info('Done Refetch!')
       },
       sync: async () => {
-        await deps.online.sync(model.todo.todo)
+        await calls().sync(model.todo.todo)
         deps.notifications.info('Synced!')
       },
       add: (newTodo: string, effects?: { after: () => void }) => {

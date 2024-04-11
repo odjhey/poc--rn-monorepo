@@ -13,6 +13,7 @@ export type ScreenConfigs = {
     never,
     {
       logout: () => void
+      wipe: () => void
     },
     { t: string }
   >
