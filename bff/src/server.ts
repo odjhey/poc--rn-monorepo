@@ -26,7 +26,7 @@ const checkAuthHeader = async (
 const protectedRoutes: FastifyPluginAsync = async (api) => {
   api.addHook('preHandler', checkAuthHeader)
 
-  let todos: string[] = ['default', 'default']
+  let todos: string[] = ['something', 'yaharu!']
 
   api.get('/todos', async (request, reply) => {
     return todos

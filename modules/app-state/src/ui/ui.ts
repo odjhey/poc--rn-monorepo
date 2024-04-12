@@ -3,12 +3,14 @@ import type { ScreenKeys } from './screens.types'
 import { authScreens } from './screens/auth/auth.screen'
 import { todoScreens } from './screens/todo/todo'
 import { clientSelectorScreens } from './screens/client-selector/client-selector.screen'
+import { pokemonScreens } from './screens/pokemon/pokemon.screen'
 
 export const appUi = (app: AppState) => {
   const screens = {
     ...todoScreens(app),
     ...authScreens(app),
     ...clientSelectorScreens(app),
+    ...pokemonScreens(app),
   } as const
 
   // type-check workaround since i can't seem to infer the type of screens
