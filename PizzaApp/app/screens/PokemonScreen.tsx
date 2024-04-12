@@ -2,7 +2,7 @@ import React, { FC } from "react"
 import { observer } from "mobx-react-lite"
 import { View, ViewStyle } from "react-native"
 import { AppStackScreenProps } from "app/navigators"
-import { Screen, Text } from "app/components"
+import { Button, Screen, Text } from "app/components"
 import { useAppScreens } from "app/hooks/useAppScreens"
 import { colors, spacing } from "app/theme"
 // import { useNavigation } from "@react-navigation/native"
@@ -10,12 +10,20 @@ import { colors, spacing } from "app/theme"
 
 interface PokemonScreenProps extends AppStackScreenProps<"Pokemon"> {}
 
-export const PokemonScreen: FC<PokemonScreenProps> = observer(function PokemonScreen() {
-  const { actions, views } = useAppScreens()["screens/pokemon/list"]({
-    navigate: () => {
-      // none
+export const PokemonScreen: FC<PokemonScreenProps> = observer(function PokemonScreen({
+  navigation,
+}) {
+  const screen = useAppScreens()["screens/pokemon/list"]({
+    navigate: (target) => {
+      switch (target) {
+        case "screens/pokemon/add":
+          navigation.navigate("PokemonAdd")
+          break
+      }
     },
   })
+
+  const { actions, views } = screen
 
   return (
     <Screen style={$container}>
@@ -30,7 +38,15 @@ export const PokemonScreen: FC<PokemonScreenProps> = observer(function PokemonSc
           />
         ))}
       </View>
-      <View style={$bottomContainer}></View>
+      <View style={$bottomContainer}>
+        <Button
+          onPress={() => {
+            actions.addPokemon()
+          }}
+        >
+          Add
+        </Button>
+      </View>
     </Screen>
   )
 })
