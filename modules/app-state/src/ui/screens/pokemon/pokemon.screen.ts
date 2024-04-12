@@ -15,6 +15,9 @@ export const pokemonScreens = (
       viewSingle: ({ id }) => {
         console.log('view single pokemon with id: ', { id })
       },
+      fetch: () => {
+        app.pokemon.fetch()
+      },
     },
     views: {
       pokemons: app.pokemon.pokemons(),

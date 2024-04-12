@@ -219,6 +219,13 @@ const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
     pokemon: {
       pokemons: () => model.pokemons.map((p) => p.id),
       addPokemon: ({ id }: { id: string }) => model.addPokemon({ id }),
+      fetch: () => {
+        calls()
+          .fetchPokemon()
+          .then(() => {
+            deps.notifications.info('fetch done!')
+          })
+      },
     },
   }
 }

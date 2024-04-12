@@ -7,6 +7,7 @@ export type ScreenConfigs = {
     {
       viewSingle: (params: { id: string }) => void
       addPokemon: () => void
+      fetch: () => void
     },
     { pokemons: string[] }
   >

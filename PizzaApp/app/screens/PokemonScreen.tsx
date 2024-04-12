@@ -46,6 +46,13 @@ export const PokemonScreen: FC<PokemonScreenProps> = observer(function PokemonSc
         >
           Add
         </Button>
+        <Button
+          onPress={() => {
+            actions.fetch()
+          }}
+        >
+          fetch
+        </Button>
       </View>
     </Screen>
   )
