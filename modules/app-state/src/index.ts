@@ -49,12 +49,17 @@ const Connection = types.model({
   url: types.string,
 })
 
+const Pokemon = types.model({
+  id: types.string,
+})
+
 export const AppModel = types
   .model({
     todo: TodoModel,
     timer: types.optional(types.string, ''), // @todo
     auth: types.optional(Auth, { isAuth: true }),
     connection: Connection,
+    pokemons: types.array(Pokemon),
   })
   .actions((self) => ({
     setTimer(value: string) {
@@ -62,6 +67,9 @@ export const AppModel = types
     },
     setConnection(value: string) {
       self.connection.url = value
+    },
+    addPokemon({ id }: { id: string }) {
+      self.pokemons.push({ id })
     },
   }))
 
@@ -206,6 +214,11 @@ const appState = (model: Instance<typeof AppModel>, deps: Deps) => {
       get: () => model.todo.todo,
       getIdx: (index: number) => model.todo.getIdx(index),
       clear: () => model.todo.clear(),
+    },
+
+    pokemon: {
+      pokemons: () => model.pokemons.map((p) => p.id),
+      addPokemon: ({ id }: { id: string }) => model.addPokemon({ id }),
     },
   }
 }

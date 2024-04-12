@@ -3,7 +3,7 @@ import { ScreenConfigs } from './pokemon.types'
 
 // Main function to generate screen configurations
 export const pokemonScreens = (
-  _app: AppState
+  app: AppState
 ): {
   [K in keyof ScreenConfigs]: ScreenConfigs[K]
 } => ({
@@ -17,7 +17,7 @@ export const pokemonScreens = (
       },
     },
     views: {
-      pokemons: ['psyduck', 'bulbasaur', 'john cena'],
+      pokemons: app.pokemon.pokemons(),
     },
   }),
 
@@ -25,6 +25,7 @@ export const pokemonScreens = (
     actions: {
       addPokemon: ({ id }) => {
         console.log('add pokemon with id: ', { id })
+        app.pokemon.addPokemon({ id })
 
         navigate('screens/pokemon/list')
       },
