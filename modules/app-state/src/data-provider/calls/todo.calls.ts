@@ -12,9 +12,7 @@ export const todoCalls: Calls<TodoCalls> = ({ url, client }, context) => ({
 
     try {
       console.log('try fetch asdf', url)
-      const a = await trpcClient(url, client)['mobile-config'].config.query({
-        seed: 'local',
-      })
+      const a = await trpcClient(url, client).todo.todos.query()
       console.log({ a })
       const token = await context.getToken()
       const response = await client.get(`${url}/api/todos`, {
@@ -38,6 +36,9 @@ export const todoCalls: Calls<TodoCalls> = ({ url, client }, context) => ({
 
   sync: async (todos: string[]) => {
     try {
+      const res = await trpcClient(url, client).todo.sync.mutate({ todos })
+      console.log({ res })
+
       const token = await context.getToken()
       const result = await client.post(`${url}/api/todos`, {
         headers: {

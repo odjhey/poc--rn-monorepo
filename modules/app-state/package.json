@@ -10,7 +10,8 @@
     "build": "tsc --declaration",
     "format": "yarn eslint src tests --fix",
     "test": "tap",
-    "gen:screen": "plop screen"
+    "gen:screen": "plop screen",
+    "link-deps": "rm -r node_modules/client-bff && ln -s ../../../bff node_modules/client-bff"
   },
   "devDependencies": {
     "@types/eslint": "^8",
