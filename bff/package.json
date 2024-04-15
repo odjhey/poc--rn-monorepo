@@ -1,15 +1,19 @@
 {
-  "name": "bff",
+  "name": "client-bff",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "dist/server.js",
+  "types": "dist/server.d.ts",
   "author": "Odelon Jhey Pacalso <odjhey@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "dev": "tsx watch src/server.ts"
+    "dev": "tsx watch src/server.ts",
+    "watch": "tsc -w --declaration",
+    "build": "tsc --declaration"
   },
   "devDependencies": {
     "@types/node": "^20.12.5",
-    "tsx": "^4.7.2"
+    "tsx": "^4.7.2",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "@trpc/server": "^10.45.2",
