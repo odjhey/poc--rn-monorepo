@@ -14,10 +14,15 @@ let trpcClient: ReturnType<typeof createTRPCProxyClient<AppRouter>> | null =
 
 function getTrpcClient(
   url: string,
-  client: HttpClient
+  client: HttpClient,
+  headers: Record<string, string> = {}
 ): ReturnType<typeof createTRPCProxyClient<AppRouter>> {
-  if (config.url !== url) {
+  if (
+    config.url !== url ||
+    JSON.stringify(config.headers) !== JSON.stringify(headers)
+  ) {
     config.url = url
+    config.headers = headers
     trpcClient = null
   }
 
@@ -26,7 +31,7 @@ function getTrpcClient(
       links: [
         httpBatchLink({
           url: `${config.url}/rpc`,
-          fetch: trpcFetch(client),
+          fetch: trpcFetch(client, { headers }),
         }),
       ],
     })

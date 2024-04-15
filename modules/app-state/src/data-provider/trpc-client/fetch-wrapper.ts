@@ -1,6 +1,9 @@
 import { HttpClient } from '../http-client.types'
 
-export function trpcFetch(httpClient: HttpClient) {
+export function trpcFetch(
+  httpClient: HttpClient,
+  options: { headers: Record<string, string> }
+) {
   return function (
     input: RequestInfo | URL | string,
     init?: RequestInit
@@ -15,8 +18,9 @@ export function trpcFetch(httpClient: HttpClient) {
     const method = init?.method ?? 'POST' // Default to POST
     const body = init?.body
     const headers = {
-      ...init?.headers,
       'Content-Type': 'application/json',
+      ...init?.headers,
+      ...options.headers,
     } as { Authorization: string; 'Content-Type': 'application/json' }
 
     if (method.toUpperCase() === 'POST') {

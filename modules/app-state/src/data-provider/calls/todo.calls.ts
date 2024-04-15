@@ -10,23 +10,13 @@ export const todoCalls: Calls<TodoCalls> = ({ url, client }, context) => ({
   fetchTodos: async () => {
     // @todo: extract this to own module/service for better error handling
 
+    const token = await context.getToken()
     try {
-      console.log('------try fetch xxx', url)
-      const a = await trpcClient(url, client).todo.todos.query()
-      console.log({ a })
-      const token = await context.getToken()
-      const response = await client.get(`${url}/api/todos`, {
-        headers: {
-          'Content-Type': 'application/json',
-          // @todo fixme
-          Authorization: token || '',
-        },
-        body: undefined,
-      })
-
-      console.log(response.status)
+      const result = await trpcClient(url, client, {
+        authorization: `${token}`,
+      }).todo.todos.query()
       // @todo validate this of course
-      return (await response.json()) as string[]
+      return result
     } catch (e) {
       console.error(e)
     }
@@ -35,21 +25,16 @@ export const todoCalls: Calls<TodoCalls> = ({ url, client }, context) => ({
   },
 
   sync: async (todos: string[]) => {
-    try {
-      const res = await trpcClient(url, client).todo.sync.mutate({ todos })
-      console.log({ res })
+    // @todo: extract this to own module/service for better error handling
 
-      const token = await context.getToken()
-      const result = await client.post(`${url}/api/todos`, {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: token,
-        },
-        body: JSON.stringify(todos),
+    const token = await context.getToken()
+    try {
+      await trpcClient(url, client, { authorization: token }).todo.sync.mutate({
+        todos,
       })
-      console.log(result.status)
     } catch (e) {
       console.error(e)
     }
+    // this is much better than have the app crash
   },
 })

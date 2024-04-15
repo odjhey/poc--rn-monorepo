@@ -1,21 +1,21 @@
 import { z } from 'zod'
-import { publicProcedure, router } from '../../trpc/trpc'
+import { authedProcedure, router } from '../../trpc/trpc'
 import { TRPCError } from '@trpc/server'
 
-let todos: string[] = []
+let todos: string[] = ['some stuff']
 
 export const todoRoute = router({
-  todos: publicProcedure.query(() => {
+  todos: authedProcedure.query(() => {
     return todos
   }),
 
-  sync: publicProcedure
+  sync: authedProcedure
     .input(z.object({ todos: z.array(z.string()) }))
     .mutation(({ input: { todos: todosInput } }) => {
       todos = todosInput
     }),
 
-  new: publicProcedure
+  new: authedProcedure
     .input(z.object({ todo: z.string().min(1) }))
     .mutation(({ input: { todo } }) => {
       const bannedWords = ['lol', 'foo', 'bar']
