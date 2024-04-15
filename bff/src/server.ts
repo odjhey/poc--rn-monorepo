@@ -63,3 +63,5 @@ server.listen(
     console.log(`Server listening at ${address}`)
   }
 )
+
+export type * from './trpc/app-router'

@@ -1,4 +1,5 @@
 import { Calls } from './calls.types'
+import { trpcClient } from '../trpc-client/client'
 
 type TodoCalls = {
   fetchTodos: () => Promise<string[]>
@@ -8,7 +9,13 @@ type TodoCalls = {
 export const todoCalls: Calls<TodoCalls> = ({ url, client }, context) => ({
   fetchTodos: async () => {
     // @todo: extract this to own module/service for better error handling
+
     try {
+      console.log('try fetch asdf', url)
+      const a = await trpcClient(url, client)['mobile-config'].config.query({
+        seed: 'local',
+      })
+      console.log({ a })
       const token = await context.getToken()
       const response = await client.get(`${url}/api/todos`, {
         headers: {
