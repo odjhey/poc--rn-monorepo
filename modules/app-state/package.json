@@ -8,6 +8,7 @@
   "scripts": {
     "watch": "tsc -w --declaration",
     "build": "tsc --declaration",
+    "dev": "tsc -w --declaration",
     "format": "yarn eslint src tests --fix",
     "test": "tap",
     "gen:screen": "plop screen",

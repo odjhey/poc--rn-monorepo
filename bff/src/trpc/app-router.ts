@@ -7,6 +7,9 @@ export const appRouter = router({
   b: router({
     c: publicProcedure.query(() => 'c'),
   }),
+  x: router({
+    c: publicProcedure.query(() => 'c'),
+  }),
   'mobile-config': mobileConfigRoute,
   'todo': todoRoute
 })

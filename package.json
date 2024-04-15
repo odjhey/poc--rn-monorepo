@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "turbo run dev --concurrency 4"
+  },
+  "devDependencies": {
+    "turbo": "^1.13.2"
+  },
+  "workspaces": [
+    "bff", "modules/app-state"
+  ]
+}

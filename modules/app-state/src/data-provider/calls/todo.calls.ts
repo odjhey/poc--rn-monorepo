@@ -11,7 +11,7 @@ export const todoCalls: Calls<TodoCalls> = ({ url, client }, context) => ({
     // @todo: extract this to own module/service for better error handling
 
     try {
-      console.log('try fetch asdf', url)
+      console.log('------try fetch xxx', url)
       const a = await trpcClient(url, client).todo.todos.query()
       console.log({ a })
       const token = await context.getToken()
