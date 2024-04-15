@@ -2,7 +2,7 @@ import { z } from 'zod'
 import { authedProcedure, router } from '../../trpc/trpc'
 import { TRPCError } from '@trpc/server'
 
-let todos: string[] = ['some stuff']
+let todos: string[] = ['some stuff lol']
 
 export const todoRoute = router({
   todos: authedProcedure.query(() => {
