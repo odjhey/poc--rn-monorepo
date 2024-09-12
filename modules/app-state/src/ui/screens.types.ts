@@ -4,6 +4,8 @@ export type ScreenKeys =
   | 'screens/auth/login'
   | 'screens/auth/profile'
   | 'screens/client-selector/select'
+  | 'screens/pokemon/list'
+  | 'screens/pokemon/add'
 /* tag: screens-end */
 
 // Navigator definition, targeting specific screens

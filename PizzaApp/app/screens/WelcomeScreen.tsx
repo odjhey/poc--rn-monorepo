@@ -53,6 +53,13 @@ export const WelcomeScreen: FC<WelcomeScreenProps> = observer(function WelcomeSc
         >
           Profile
         </Button>
+        <Button
+          onPress={() => {
+            navigation.navigate("Pokemon")
+          }}
+        >
+          Pokemon
+        </Button>
       </View>
     </View>
   )

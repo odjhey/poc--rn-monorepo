@@ -39,7 +39,9 @@ export type AppStackParamList = {
   Login: undefined
   Profile: undefined
   ConnectionSetup: undefined
-  // IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
+  Pokemon: undefined
+	PokemonAdd: undefined
+	// IGNITE_GENERATOR_ANCHOR_APP_STACK_PARAM_LIST
 }
 
 /**
@@ -92,7 +94,9 @@ const AppStack = observer(function AppStack() {
       <Stack.Screen name="ViewTodo" component={Screens.ViewTodoScreen} />
       <Stack.Screen name="Random" component={Screens.RandomScreen} />
       <Stack.Screen name="Profile" component={Screens.ProfileScreen} />
-      {/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
+      <Stack.Screen name="Pokemon" component={Screens.PokemonScreen} />
+			<Stack.Screen name="PokemonAdd" component={Screens.PokemonAddScreen} />
+			{/* IGNITE_GENERATOR_ANCHOR_APP_STACK_SCREENS */}
     </Stack.Navigator>
   )
 })
